@@ -1,6 +1,8 @@
 from web3 import Web3
 import requests
 import tkinter as tk
+from tkinter import ttk
+from tkinter import messagebox
 
 # Set up connection to the Ethereum network
 infura_url = 'https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID'
@@ -74,18 +76,31 @@ def scan_contract():
 # Set up the user interface with tkinter
 root = tk.Tk()
 root.title("Advanced Web3 Vulnerability Scanner")
+root.geometry("500x400")
+root.configure(bg='#f0f0f0')
 
-tk.Label(root, text="Enter Contract Address:").pack(pady=5)
-entry_address = tk.Entry(root, width=50)
+# Title Label
+title_label = tk.Label(root, text="Web3SecGuard", font=("Helvetica", 16, "bold"), bg='#f0f0f0', fg='#333')
+title_label.pack(pady=10)
+
+# Instructions Label
+instructions_label = tk.Label(root, text="Enter the address of the smart contract you want to scan:", bg='#f0f0f0', fg='#555')
+instructions_label.pack(pady=5)
+
+# Address Entry
+entry_address = tk.Entry(root, width=60, font=("Helvetica", 12))
 entry_address.pack(pady=5)
 
-scan_button = tk.Button(root, text="Start Scan", command=scan_contract)
-scan_button.pack(pady=10)
+# Scan Button
+scan_button = tk.Button(root, text="Start Scan", command=scan_contract, font=("Helvetica", 12), bg='#4CAF50', fg='#fff', relief='raised')
+scan_button.pack(pady=20)
 
+# Result Display
 result_text = tk.StringVar()
-result_label = tk.Label(root, textvariable=result_text, justify=tk.LEFT)
+result_label = tk.Label(root, textvariable=result_text, justify=tk.LEFT, bg='#f0f0f0', fg='#000', font=("Helvetica", 12))
 result_label.pack(pady=5)
 
+# Status Check
 if is_connected():
     result_text.set("Connected to Ethereum network.")
 else:
