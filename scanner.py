@@ -1,33 +1,32 @@
 from web3 import Web3
 import requests
 import tkinter as tk
-from tkinter import ttk
 from tkinter import messagebox
 
-# Set up connection to the Ethereum network
-infura_url = 'https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID'
-web3 = Web3(Web3.HTTPProvider(infura_url))
+# Set up connection to the Intersect network
+intersect_rpc_url = 'https://subnets.avax.network/pearl/testnet/rpc'
+web3 = Web3(Web3.HTTPProvider(intersect_rpc_url))
 
-# Set up API keys
-etherscan_api_key = 'YOUR_ETHERSCAN_API_KEY'
+# Set up API for Intersect Testnet
+intersect_api_url = 'https://subnets-test.avax.network/intersect/api'
 
 def is_connected():
-    """Check if connected to the Ethereum network."""
-    return web3.isConnected()
+    """Check if connected to the Intersect network."""
+    return web3.is_connected()
 
 def get_contract_source_code(contract_address):
     """
-    Fetch the source code of a smart contract from Etherscan.
+    Fetch the source code of a smart contract from Intersect API.
     :param contract_address: The address of the smart contract
     :return: The contract's source code if available, or None if retrieval fails
     """
-    url = f'https://api.etherscan.io/api?module=contract&action=getsourcecode&address={contract_address}&apikey={etherscan_api_key}'
+    url = f'{intersect_api_url}/contract?address={contract_address}'
     try:
         response = requests.get(url)
         response.raise_for_status()  # Raise an exception for HTTP errors
         data = response.json()
-        if data['status'] == '1':
-            return data['result'][0]['SourceCode']
+        if 'sourceCode' in data:
+            return data['sourceCode']
     except requests.RequestException as e:
         result_text.set(f"Error fetching source code: {e}")
     return None
@@ -57,7 +56,7 @@ def analyze_code(source_code):
 def scan_contract():
     """Start scanning the smart contract for vulnerabilities."""
     contract_address = entry_address.get()
-    if not web3.isAddress(contract_address):
+    if not web3.is_address(contract_address):
         result_text.set("Invalid address.")
         return
 
@@ -102,8 +101,8 @@ result_label.pack(pady=5)
 
 # Status Check
 if is_connected():
-    result_text.set("Connected to Ethereum network.")
+    result_text.set("Connected to Intersect network.")
 else:
-    result_text.set("Failed to connect to Ethereum network.")
+    result_text.set("Failed to connect to Intersect network.")
 
 root.mainloop()
